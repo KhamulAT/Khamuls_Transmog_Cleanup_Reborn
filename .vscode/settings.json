@@ -1,0 +1,62 @@
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+        {
+        "match": "\\.(lua|toc|xml)$",
+        "cmd": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\bin\\publish2wowdir.ps1\""
+        }]
+    },
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.builtin": {
+        "basic": "disable",
+        "debug": "disable",
+        "io": "disable",
+        "math": "disable",
+        "os": "disable",
+        "package": "disable",
+        "string": "disable",
+        "table": "disable",
+        "utf8": "disable"
+    },
+    "Lua.workspace.library": [
+        "~\\.vscode\\extensions\\ketho.wow-api-0.22.3\\Annotations\\Core"
+    ],
+    "Lua.diagnostics.globals": [
+        "LARGE_NUMBER_SEPERATOR",
+        "ItemRefTooltip",
+        "ItemRefShoppingTooltip1",
+        "ItemRefShoppingTooltip2",
+        "ShoppingTooltip1",
+        "ShoppingTooltip2",
+        "TooltipDataProcessor",
+        "TransmogUtil",
+        "LOCALIZED_CLASS_NAMES_MALE",
+        "LOCALIZED_CLASS_NAMES_FEMALE",
+        "SELECTED_CHAT_FRAME",
+        "DEFAULT_CHAT_FRAME",
+        "ACCEPT",
+        "CANCEL",
+        "Settings",
+        "SlashCmdList",
+        "hash_SlashCmdList",
+        "NORMAL_FONT_COLOR_CODE",
+        "FONT_COLOR_CODE_CLOSE",
+        "ITEM_SOULBOUND",
+        "ITEM_ACCOUNTBOUND",
+        "ITEM_BNETACCOUNTBOUND",
+        "ITEM_BIND_TO_ACCOUNT",
+        "ITEM_BIND_TO_BNETACCOUNT",
+        "ITEM_ACCOUNTBOUND_UNTIL_EQUIP",
+        "ITEM_BIND_ON_EQUIP",
+        "ITEM_BIND_ON_USE",
+        "NUM_BAG_SLOTS",
+        "MerchantFrame",
+        "ITEM_QUALITY_COLORS",
+        "GOLD_AMOUNT_SYMBOL",
+        "HandleModifiedItemClick",
+        "CreateSettingsListSectionHeaderInitializer",
+        "ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP",
+        "ITEM_CLASSES_ALLOWED"
+    ],
+    "Lua.type.weakUnionCheck": true
+}

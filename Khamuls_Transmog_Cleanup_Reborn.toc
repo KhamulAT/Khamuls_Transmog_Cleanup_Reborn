@@ -1,0 +1,27 @@
+## Interface: 120005
+## Title: Khamul's Transmog Cleanup Reborn
+## Notes: Mass-sell transmog and junk items at vendors with filters and safeguards.
+## Author: Khamul - Antonidas
+## Version: 1.0.0
+## SavedVariables: KhamulsTransmogCleanupDB
+## RequiredDeps: CanIMogIt
+## OptionalDeps: Auctionator, TradeSkillMaster
+## IconTexture: Interface\Icons\Inv_misc_enggizmos_19
+## X-License: MIT
+## Category: Inventory
+
+Libs\Files.xml
+Locales\Locales.xml
+Source\Util\Compat.lua
+Source\Util\Tooltip.lua
+Source\Core.lua
+Source\TransmogStatus.lua
+Source\PriceSources.lua
+Source\ItemScanner.lua
+Source\Filters.lua
+Source\Selling.lua
+Source\UI\FilterPanel.lua
+Source\UI\ItemList.lua
+Source\UI\MainFrame.lua
+Source\UI\Options.lua
+Source\UI\OptionsTemplates.xml
