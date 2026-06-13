@@ -4,8 +4,7 @@
 ## Author: Khamul - Antonidas
 ## Version: 1.0.0
 ## SavedVariables: KhamulsTransmogCleanupDB
-## RequiredDeps: CanIMogIt
-## OptionalDeps: Auctionator, TradeSkillMaster
+## OptionalDeps: CanIMogIt, Auctionator, TradeSkillMaster
 ## IconTexture: Interface\Icons\Inv_misc_enggizmos_19
 ## X-License: MIT
 ## Category: Inventory
