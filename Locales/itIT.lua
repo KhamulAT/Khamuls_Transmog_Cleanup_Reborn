@@ -54,6 +54,7 @@ L["VENDOR_SUM"] = "Totale: %s"
 L["SOLD_ITEM"] = "%s venduto per %s."
 L["SOLD_SUMMARY"] = "%d oggetto/i venduto/i per %s."
 L["SOLD_MORE_REMAINING"] = "Vendita protetta: rimangono altri oggetti. Controlla il riacquisto, poi clicca di nuovo per il lotto successivo."
+L["SAFEGUARD_DISABLE_WARNING"] = "Tutti i %d oggetto/i contrassegnati per la vendita verranno venduti in una volta quando fai clic su \"Vendi gli oggetti!\". Se vengono venduti più di 12 oggetti, quelli oltre i 12 slot di riacquisto non potranno essere riacquistati in caso di errore.\n\nDisattivare la vendita protetta?"
 
 L["None"] = "Nessuna"
 L["Price source"] = "Fonte dei prezzi"

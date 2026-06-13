@@ -34,7 +34,8 @@ optionally limited to 12 items per click so everything stays recoverable via buy
   [Auctionator](https://www.curseforge.com/wow/addons/auctionator) or
   [TradeSkillMaster](https://www.tradeskillmaster.com/) (configured in the addon options)
 - Transmog status via [CanIMogIt](https://www.curseforge.com/wow/addons/can-i-mog-it)
-  (required on retail; MoP Classic falls back to the native API)
+  when installed (optional on both clients; falls back to the built-in native
+  implementation otherwise)
 - Localized: deDE, enUS, esES, frFR, itIT, koKR, ptBR, ruRU, zhCN
 
 ## Supported clients

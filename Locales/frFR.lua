@@ -54,6 +54,7 @@ L["VENDOR_SUM"] = "Total : %s"
 L["SOLD_ITEM"] = "%s vendu pour %s."
 L["SOLD_SUMMARY"] = "%d objet(s) vendu(s) pour %s."
 L["SOLD_MORE_REMAINING"] = "Vente sécurisée : il reste des objets – vérifiez le rachat, puis cliquez à nouveau pour le lot suivant."
+L["SAFEGUARD_DISABLE_WARNING"] = "Les %d objet(s) marqué(s) pour la vente seront tous vendus en une fois quand vous cliquerez sur « Vendre les objets ! ». Si plus de 12 objets sont vendus, ceux au-delà des 12 emplacements de rachat ne pourront pas être rachetés en cas d'erreur.\n\nDésactiver la vente sécurisée ?"
 
 L["None"] = "Aucune"
 L["Price source"] = "Source de prix"

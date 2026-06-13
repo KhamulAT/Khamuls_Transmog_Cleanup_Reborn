@@ -16,10 +16,33 @@ FilterPanel.height = PANEL_HEIGHT + SLIDER_HEIGHT
 local panel
 local widgets = {} -- { widget, getter } pairs, synced in Load()
 local isLoading = false
+local safeguardCheck
 
 local function Filters()
     return addon.db.global.filters
 end
+
+-- Confirm before disabling the safeguard: an unsafeguarded sale empties the
+-- whole list at once, and anything past the 12 buyback slots is unrecoverable.
+StaticPopupDialogs["KHAMULS_TRANSMOG_CLEANUP_DISABLE_SAFEGUARD"] = {
+    text = L["SAFEGUARD_DISABLE_WARNING"],
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function()
+        Filters().safeguard = false
+        addon.MainFrame:Refresh()
+    end,
+    OnCancel = function()
+        -- Cancelled (or dismissed): keep the safeguard on and re-check the box.
+        if safeguardCheck then
+            safeguardCheck:SetChecked(true)
+        end
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    showAlert = true,
+}
 
 local function GetCheckLabel(check)
     local label = check.Text or check.text
@@ -217,9 +240,20 @@ function FilterPanel:Create(parent)
     end
 
     -- Selling column
-    MakeCheck(L["Enable safeguard sale"], colSelling, y,
+    safeguardCheck = MakeCheck(L["Enable safeguard sale"], colSelling, y,
         function() return Filters().safeguard end,
         function(value) Filters().safeguard = value end)
+    safeguardCheck:SetScript("OnClick", function(self)
+        if isLoading then return end
+        if self:GetChecked() then
+            Filters().safeguard = true
+            addon.MainFrame:Refresh()
+        else
+            -- Disabling: warn first; the db change is applied only on confirm.
+            local sellable = addon.Filters.GetSellableItems(addon.MainFrame.currentItems or {})
+            StaticPopup_Show("KHAMULS_TRANSMOG_CLEANUP_DISABLE_SAFEGUARD", #sellable)
+        end
+    end)
 
     self.thresholdCheck = MakeCheck(L["Don't sell above auction profit"], colSelling, y - 1 * ROW_HEIGHT,
         function() return Filters().useThreshold end,

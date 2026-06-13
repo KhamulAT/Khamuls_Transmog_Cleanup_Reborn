@@ -54,6 +54,7 @@ L["VENDOR_SUM"] = "Summe: %s"
 L["SOLD_ITEM"] = "%s für %s verkauft."
 L["SOLD_SUMMARY"] = "%d Gegenstand/Gegenstände für %s verkauft."
 L["SOLD_MORE_REMAINING"] = "Verkaufsschutz: Es sind weitere Gegenstände übrig – prüfe den Rückkauf und klicke erneut für die nächste Gruppe."
+L["SAFEGUARD_DISABLE_WARNING"] = "Alle %d zum Verkauf markierten Gegenstände werden auf einmal verkauft, wenn du auf \"Gegenstände verkaufen!\" klickst. Werden mehr als 12 Gegenstände verkauft, können die über die 12 Rückkaufplätze hinausgehenden bei einem Versehen nicht zurückgekauft werden.\n\nVerkaufsschutz deaktivieren?"
 
 L["None"] = "Keine"
 L["Price source"] = "Preisquelle"

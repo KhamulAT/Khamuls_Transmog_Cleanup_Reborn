@@ -59,6 +59,7 @@ L["VENDOR_SUM"] = "Total: %s"
 L["SOLD_ITEM"] = "Sold %s for %s."
 L["SOLD_SUMMARY"] = "Sold %d item(s) for %s."
 L["SOLD_MORE_REMAINING"] = "Safeguard: more items remain - check the buyback tab, then click again for the next batch."
+L["SAFEGUARD_DISABLE_WARNING"] = "All %d item(s) marked to be sold will be sold at once when you click \"Sell the items!\". If more than 12 items are sold, those beyond the 12 buyback slots cannot be bought back if sold by mistake.\n\nDisable the safeguard sale?"
 
 -- Options
 L["None"] = true

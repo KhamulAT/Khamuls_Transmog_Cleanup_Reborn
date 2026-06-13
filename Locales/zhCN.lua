@@ -54,6 +54,7 @@ L["VENDOR_SUM"] = "总计：%s"
 L["SOLD_ITEM"] = "已出售 %s，获得 %s。"
 L["SOLD_SUMMARY"] = "已出售 %d 件物品，共 %s。"
 L["SOLD_MORE_REMAINING"] = "安全出售：还有更多物品。请检查回购标签，然后再次点击出售下一批。"
+L["SAFEGUARD_DISABLE_WARNING"] = "点击\"出售物品！\"时，所有标记为出售的 %d 件物品将一次性售出。如果出售超过 12 件，超出 12 个回购栏位的物品在误售后将无法买回。\n\n要禁用安全出售吗？"
 
 L["None"] = "无"
 L["Price source"] = "价格来源"

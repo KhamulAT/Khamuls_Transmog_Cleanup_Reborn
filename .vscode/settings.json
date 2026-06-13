@@ -56,7 +56,11 @@
         "HandleModifiedItemClick",
         "CreateSettingsListSectionHeaderInitializer",
         "ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP",
-        "ITEM_CLASSES_ALLOWED"
+        "ITEM_CLASSES_ALLOWED",
+        "StaticPopupDialogs",
+        "YES",
+        "NO",
+        "StaticPopup_Show"
     ],
     "Lua.type.weakUnionCheck": true
 }
