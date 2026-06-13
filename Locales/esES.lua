@@ -54,6 +54,7 @@ L["VENDOR_SUM"] = "Total: %s"
 L["SOLD_ITEM"] = "%s vendido por %s."
 L["SOLD_SUMMARY"] = "%d objeto(s) vendido(s) por %s."
 L["SOLD_MORE_REMAINING"] = "Venta protegida: quedan más objetos. Revisa la recompra y haz clic de nuevo para el siguiente lote."
+L["SAFEGUARD_DISABLE_WARNING"] = "Todos los %d objeto(s) marcados para vender se venderán de una vez al hacer clic en «¡Vender los objetos!». Si se venden más de 12 objetos, los que superen las 12 ranuras de recompra no podrán recomprarse si se venden por error.\n\n¿Desactivar la venta protegida?"
 
 L["None"] = "Ninguna"
 L["Price source"] = "Fuente de precios"

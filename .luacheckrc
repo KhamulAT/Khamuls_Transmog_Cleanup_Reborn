@@ -47,6 +47,10 @@ read_globals = {
     "GameTooltip",
     "MerchantFrame",
     "UIParent",
+    "StaticPopupDialogs",
+    "StaticPopup_Show",
+    "YES",
+    "NO",
 
     -- Constants
     "GOLD_AMOUNT_SYMBOL",
