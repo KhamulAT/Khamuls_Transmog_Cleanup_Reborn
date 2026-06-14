@@ -193,7 +193,7 @@ function ItemList:SetItems(items)
 
         if priceConfigured then
             if item.auctionPrice then
-                local text = GetMoneyString(item.auctionPrice, true)
+                local text = GetMoneyString(item.auctionPrice * item.count, true)
                 if overThreshold then
                     text = RED .. text .. "|r"
                 end

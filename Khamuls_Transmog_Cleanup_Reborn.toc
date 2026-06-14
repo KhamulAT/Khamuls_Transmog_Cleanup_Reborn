@@ -2,7 +2,7 @@
 ## Title: Khamul's Transmog Cleanup Reborn
 ## Notes: Mass-sell transmog and junk items at vendors with filters and safeguards.
 ## Author: Khamul - Antonidas
-## Version: 1.2.1
+## Version: 1.2.2
 ## SavedVariables: KhamulsTransmogCleanupDB
 ## OptionalDeps: CanIMogIt, Auctionator, TradeSkillMaster
 ## IconTexture: Interface\Icons\Inv_misc_enggizmos_19

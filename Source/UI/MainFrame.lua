@@ -120,7 +120,7 @@ function MainFrame:UpdateSellButton()
     local auctionTotal = 0
     for _, item in ipairs(self.currentItems or {}) do
         if not willSell[item] and item.auctionPrice then
-            auctionTotal = auctionTotal + item.auctionPrice
+            auctionTotal = auctionTotal + item.auctionPrice * item.count
         end
     end
 
