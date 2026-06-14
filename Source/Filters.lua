@@ -72,7 +72,7 @@ function Filters.IsOverThreshold(item, f)
     return f.useThreshold
         and addon.PriceSources:IsConfigured()
         and item.auctionPrice ~= nil
-        and item.auctionPrice > f.thresholdGold * COPPER_PER_GOLD
+        and item.auctionPrice * item.count > f.thresholdGold * COPPER_PER_GOLD
 end
 
 -- Single chokepoint deciding what may actually be sold.
