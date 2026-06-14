@@ -20,12 +20,23 @@ local function GetCategoryText(category, quality)
     return categoryTexts[category]
 end
 
+-- Item class IDs are stable across every WoW version; the Enum.ItemClass field
+-- names are not reliable across retail/classic, so match the numbers directly.
+local CLASS_CONSUMABLE = 0
+local CLASS_WEAPON = 2
+local CLASS_GEM = 3
+local CLASS_ARMOR = 4
+local CLASS_REAGENT = 5
+local CLASS_TRADEGOODS = 7
+
 local function GetCategory(classID)
-    if classID == Enum.ItemClass.Weapon or classID == Enum.ItemClass.Armor then
+    if classID == CLASS_WEAPON or classID == CLASS_ARMOR then
         return "equipment"
-    elseif classID == Enum.ItemClass.Consumable then
+    elseif classID == CLASS_CONSUMABLE then
         return "consumables"
-    elseif classID == Enum.ItemClass.Tradegoods then
+    -- Trade Goods covers crafting materials broadly: gems and reagents read as
+    -- crafting mats to players, so they fold into the same category.
+    elseif classID == CLASS_TRADEGOODS or classID == CLASS_GEM or classID == CLASS_REAGENT then
         return "tradeGoods"
     end
     return "junkOther"
@@ -40,7 +51,18 @@ function ItemScanner:Scan(loadCallback)
     local priceConfigured = addon.PriceSources:IsConfigured()
     local S = addon.MogStatus
 
+    -- Backpack + the four regular bags, plus the retail reagent bag (container
+    -- index 5 = Enum.BagIndex.ReagentBag), where crafting materials auto-sort.
+    -- Gated on retail: on classic, index 5 is a bank bag, not the reagent bag.
+    local bagIDs = {}
     for bag = 0, NUM_BAG_SLOTS do
+        bagIDs[#bagIDs + 1] = bag
+    end
+    if addon.Compat.IsRetail then
+        bagIDs[#bagIDs + 1] = 5
+    end
+
+    for _, bag in ipairs(bagIDs) do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and not info.hasNoValue and not info.isLocked then
