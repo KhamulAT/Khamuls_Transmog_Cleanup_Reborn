@@ -64,6 +64,11 @@ function Filters.Matches(item, f)
 end
 
 function Filters.IsOverThreshold(item, f)
+    -- Optionally exempt unlearned transmog so its appearance is captured on sale
+    -- regardless of auction value.
+    if f.thresholdIgnoreUnlearned and item.mogStatus == addon.MogStatus.LEARNABLE then
+        return false
+    end
     return f.useThreshold
         and addon.PriceSources:IsConfigured()
         and item.auctionPrice ~= nil

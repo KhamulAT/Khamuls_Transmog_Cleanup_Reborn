@@ -68,7 +68,8 @@ local function OnIgnoreClick(check)
 end
 
 local function MakeCell(row, x, width, justify)
-    local cell = row:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+    -- GameFontHighlight is 12px vs GameFontHighlightSmall's 10px (+2px).
+    local cell = row:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     cell:SetPoint("LEFT", x, 0)
     cell:SetWidth(width)
     cell:SetJustifyH(justify or "LEFT")
@@ -106,9 +107,14 @@ local function GetRow(index)
         row.vendor = MakeCell(row, VENDOR_X, VENDOR_W, "RIGHT")
         row.auction = MakeCell(row, AUCTION_X, AUCTION_W, "RIGHT")
 
-        row:SetScript("OnEnter", OnRowEnter)
-        row:SetScript("OnLeave", function() GameTooltip:Hide() end)
-        row:SetScript("OnClick", OnRowClick)
+        -- The item tooltip and item-link click are scoped to the item-text cell,
+        -- not the whole row.
+        row.itemHover = CreateFrame("Button", nil, row)
+        row.itemHover:SetPoint("TOPLEFT", ITEM_X, 0)
+        row.itemHover:SetSize(ITEM_W, ROW_HEIGHT)
+        row.itemHover:SetScript("OnEnter", function() OnRowEnter(row) end)
+        row.itemHover:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        row.itemHover:SetScript("OnClick", function() OnRowClick(row) end)
 
         rows[index] = row
     end
@@ -130,6 +136,13 @@ function ItemList:Create(parent, topOffset, bottomOffset)
     header:SetPoint("TOPLEFT", 18, topOffset)
     header:SetPoint("TOPRIGHT", -40, topOffset)
     header:SetHeight(16)
+
+    -- Ignore column: a small "pass / skip" icon instead of a text label.
+    local ignoreIcon = header:CreateTexture(nil, "ARTWORK")
+    ignoreIcon:SetSize(16, 16)
+    ignoreIcon:SetPoint("LEFT", IGNORE_X + 2, 0)
+    ignoreIcon:SetTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
+
     MakeHeaderCell(header, L["Item"], ITEM_X, ITEM_W)
     MakeHeaderCell(header, L["ilvl"], ILVL_X, ILVL_W, "CENTER")
     MakeHeaderCell(header, L["Status"], STATUS_X, STATUS_W)

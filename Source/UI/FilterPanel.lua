@@ -145,87 +145,46 @@ function FilterPanel:Create(parent)
     panel:SetPoint("TOPRIGHT", -18, -36)
     panel:SetHeight(PANEL_HEIGHT)
 
-    -- Retail has no transmog status column (selling teaches the transmog),
-    -- so the remaining columns pack to the left.
-    local hasStatusColumn = not addon.Compat.IsRetail
-    local col1, col2 = 0, COLUMN_WIDTH
-    local colStatus = COLUMN_WIDTH * 2
-    local nextCol = hasStatusColumn and 3 or 2
-    local colExcludes = COLUMN_WIDTH * nextCol
-    local colCategories = COLUMN_WIDTH * (nextCol + 1)
-    local colSelling = COLUMN_WIDTH * (nextCol + 2)
+    -- Fixed six-column layout, same positions on both flavors. Column 4 is the
+    -- only one that differs: "Excludes" on retail (selling teaches the transmog,
+    -- so there is no status filter) vs "Transmog settings" on Mists.
+    local col = {}
+    for i = 1, 6 do col[i] = COLUMN_WIDTH * (i - 1) end
+    local colQuality, colBinding, colCategories = col[1], col[2], col[3]
+    local colFlavor, colAuction, colOptions = col[4], col[5], col[6]
 
-    MakeHeader(L["Quality"], col1)
-    MakeHeader(L["Binding"], col2)
-    if hasStatusColumn then
-        MakeHeader(L["Transmog status"], colStatus)
-    end
+    MakeHeader(L["Quality"], colQuality)
+    MakeHeader(L["Binding"], colBinding)
     MakeHeader(L["Categories"], colCategories)
-    MakeHeader(L["Selling"], colSelling)
+    MakeHeader(addon.Compat.IsRetail and L["Exclude items from XPac"] or L["Transmog settings"], colFlavor)
+    self.auctionHeader = MakeHeader(L["Auction settings"], colAuction)
+    MakeHeader(L["Options"], colOptions)
 
     local y = -HEADER_HEIGHT
 
     -- Column 1: item qualities
     for quality = 0, 5 do
-        MakeCheck(QualityLabel(quality), col1, y - quality * ROW_HEIGHT,
+        MakeCheck(QualityLabel(quality), colQuality, y - quality * ROW_HEIGHT,
             function() return Filters().qualities[quality] end,
             function(value) Filters().qualities[quality] = value end)
     end
 
-    -- Column 2: bind types
+    -- Column 2: bind types (Warbound last)
     local bindRows = {
         { key = "boe", label = L["BoE"] },
         { key = "bop", label = L["BoP"] },
         { key = "boa", label = L["BoA"] },
-        { key = "warbound", label = L["Warbound"] },
         { key = "onUse", label = L["On Use"] },
+        { key = "warbound", label = L["Warbound"] },
     }
     for i, row in ipairs(bindRows) do
         local key = row.key
-        MakeCheck(row.label, col2, y - (i - 1) * ROW_HEIGHT,
+        MakeCheck(row.label, colBinding, y - (i - 1) * ROW_HEIGHT,
             function() return Filters().bindTypes[key] end,
             function(value) Filters().bindTypes[key] = value end)
     end
 
-    -- Transmog status column (Mists only)
-    if hasStatusColumn then
-        local statusRows = {
-            { key = "learned", label = L["Learned"] },
-            { key = "cantBeLearned", label = L["Can't be learned"] },
-            { key = "learnableByOther", label = L["Learnable by another character"] },
-        }
-        self.statusChecks = {}
-        for i, row in ipairs(statusRows) do
-            local key = row.key
-            self.statusChecks[key] = MakeCheck(row.label, colStatus, y - (i - 1) * ROW_HEIGHT,
-                function() return Filters().transmogStatus[key] end,
-                function(value) Filters().transmogStatus[key] = value end)
-        end
-    end
-
-    -- Excludes column. The expansion block is retail only (expacID is
-    -- unreliable on classic); "other excludes" applies to both clients.
-    local otherTop = y
-    if addon.Compat.IsRetail then
-        MakeHeader(L["Exclude XPac"], colExcludes)
-        local expansions = { 11, 10, 9 } -- Midnight, The War Within, Dragonflight
-        for i, expacID in ipairs(expansions) do
-            local label = _G["EXPANSION_NAME" .. expacID] or tostring(expacID)
-            MakeCheck(label, colExcludes, y - (i - 1) * ROW_HEIGHT,
-                function() return Filters().excludeExpansions[expacID] end,
-                function(value) Filters().excludeExpansions[expacID] = value end)
-        end
-        otherTop = y - 3 * ROW_HEIGHT - 2
-        MakeHeader(L["Other excludes"], colExcludes, otherTop)
-        otherTop = otherTop - HEADER_HEIGHT
-    else
-        MakeHeader(L["Other excludes"], colExcludes)
-    end
-    MakeCheck(L["Set tokens"], colExcludes, otherTop,
-        function() return Filters().excludeSetTokens end,
-        function(value) Filters().excludeSetTokens = value end)
-
-    -- Categories column
+    -- Column 3: categories
     local categoryRows = {
         { key = "nonTransmogEquipment", label = L["Non-transmog equipment"] },
         { key = "consumables", label = L["Consumables"] },
@@ -239,29 +198,51 @@ function FilterPanel:Create(parent)
             function(value) Filters().categories[key] = value end)
     end
 
-    -- Selling column
-    safeguardCheck = MakeCheck(L["Enable safeguard sale"], colSelling, y,
-        function() return Filters().safeguard end,
-        function(value) Filters().safeguard = value end)
-    safeguardCheck:SetScript("OnClick", function(self)
-        if isLoading then return end
-        if self:GetChecked() then
-            Filters().safeguard = true
-            addon.MainFrame:Refresh()
-        else
-            -- Disabling: warn first; the db change is applied only on confirm.
-            local sellable = addon.Filters.GetSellableItems(addon.MainFrame.currentItems or {})
-            StaticPopup_Show("KHAMULS_TRANSMOG_CLEANUP_DISABLE_SAFEGUARD", #sellable)
+    -- Column 4 (flavor): retail excludes (expansions) vs Mists transmog status.
+    -- Set-token exclusion lives here on both flavors as the final checkbox.
+    local nextRow = 0
+    if addon.Compat.IsRetail then
+        local expansions = { 11, 10, 9 } -- Midnight, The War Within, Dragonflight
+        for _, expacID in ipairs(expansions) do
+            local label = _G["EXPANSION_NAME" .. expacID] or tostring(expacID)
+            MakeCheck(label, colFlavor, y - nextRow * ROW_HEIGHT,
+                function() return Filters().excludeExpansions[expacID] end,
+                function(value) Filters().excludeExpansions[expacID] = value end)
+            nextRow = nextRow + 1
         end
-    end)
+    else
+        local statusRows = {
+            { key = "learned", label = L["Learned"] },
+            { key = "cantBeLearned", label = L["Can't be learned"] },
+            { key = "learnableByOther", label = L["Learnable by another character"] },
+        }
+        self.statusChecks = {}
+        for _, row in ipairs(statusRows) do
+            local key = row.key
+            self.statusChecks[key] = MakeCheck(row.label, colFlavor, y - nextRow * ROW_HEIGHT,
+                function() return Filters().transmogStatus[key] end,
+                function(value) Filters().transmogStatus[key] = value end)
+            nextRow = nextRow + 1
+        end
+    end
+    -- Second sub-header within the column for the non-expansion excludes.
+    local otherY = y - nextRow * ROW_HEIGHT - 2
+    MakeHeader(L["Other excludes"], colFlavor, otherY)
+    MakeCheck(L["Set tokens"], colFlavor, otherY - HEADER_HEIGHT,
+        function() return Filters().excludeSetTokens end,
+        function(value) Filters().excludeSetTokens = value end)
 
-    self.thresholdCheck = MakeCheck(L["Don't sell above auction profit"], colSelling, y - 1 * ROW_HEIGHT,
+    -- Column 5: auction settings (only meaningful with a price source)
+    self.thresholdCheck = MakeCheck(L["Don't sell above auction profit"], colAuction, y,
         function() return Filters().useThreshold end,
-        function(value) Filters().useThreshold = value end)
+        function(value)
+            Filters().useThreshold = value
+            FilterPanel:UpdateThresholdWidgets()
+        end)
 
     local box = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")
     box:SetSize(60, 18)
-    box:SetPoint("TOPLEFT", colSelling + 28, y - 2 * ROW_HEIGHT - 2)
+    box:SetPoint("TOPLEFT", colAuction + 28, y - 1 * ROW_HEIGHT - 2)
     box:SetAutoFocus(false)
     box:SetNumeric(true)
     box:SetMaxLetters(7)
@@ -284,11 +265,44 @@ function FilterPanel:Create(parent)
     self.thresholdBox = box
     self.thresholdSuffix = goldSuffix
 
-    MakeCheck(L["Verbose"], colSelling, y - 3 * ROW_HEIGHT,
+    -- Exempts unlearned transmog from the threshold (e.g. sell it for the
+    -- appearance even when its auction value is above the limit).
+    self.thresholdUnlearnedCheck = MakeCheck(L["Except unlearned transmog"], colAuction, y - 2 * ROW_HEIGHT,
+        function() return Filters().thresholdIgnoreUnlearned end,
+        function(value) Filters().thresholdIgnoreUnlearned = value end)
+
+    -- Column 6: options
+    safeguardCheck = MakeCheck(L["Enable safeguard sale"], colOptions, y,
+        function() return Filters().safeguard end,
+        function(value) Filters().safeguard = value end)
+    safeguardCheck:SetScript("OnClick", function(self)
+        if isLoading then return end
+        if self:GetChecked() then
+            Filters().safeguard = true
+            addon.MainFrame:Refresh()
+        else
+            -- Disabling: warn first; the db change is applied only on confirm.
+            local sellable = addon.Filters.GetSellableItems(addon.MainFrame.currentItems or {})
+            StaticPopup_Show("KHAMULS_TRANSMOG_CLEANUP_DISABLE_SAFEGUARD", #sellable)
+        end
+    end)
+
+    MakeCheck(L["Verbose"], colOptions, y - 1 * ROW_HEIGHT,
         function() return Filters().verbose end,
         function(value) Filters().verbose = value end)
 
     CreateSlider(parent)
+end
+
+-- Threshold widgets need a price source; the "except unlearned" exemption
+-- additionally only makes sense while the threshold itself is enabled.
+function FilterPanel:UpdateThresholdWidgets()
+    local priceConfigured = addon.PriceSources:IsConfigured()
+    self.auctionHeader:SetShown(priceConfigured)
+    self.thresholdCheck:SetShown(priceConfigured)
+    self.thresholdBox:SetShown(priceConfigured)
+    self.thresholdSuffix:SetShown(priceConfigured)
+    self.thresholdUnlearnedCheck:SetShown(priceConfigured and Filters().useThreshold)
 end
 
 -- Syncs every widget from the db; called on every show and after options changes.
@@ -308,10 +322,7 @@ function FilterPanel:Load()
         SetCheckEnabled(self.statusChecks.learnableByOther, supportsOther, L["REQUIRES_CIMI"])
     end
 
-    local priceConfigured = addon.PriceSources:IsConfigured()
-    self.thresholdCheck:SetShown(priceConfigured)
-    self.thresholdBox:SetShown(priceConfigured)
-    self.thresholdSuffix:SetShown(priceConfigured)
+    self:UpdateThresholdWidgets()
     self.thresholdBox:SetText(tostring(Filters().thresholdGold or 0))
 
     local maxItemLevel = math.min(Filters().maxItemLevel or addon.MAX_ITEM_LEVEL, addon.MAX_ITEM_LEVEL)

@@ -107,11 +107,28 @@ function MainFrame:UpdateSellButton()
     end
     sellButton:SetEnabled(#sellable > 0 and addon.merchantOpen and not addon.Selling:IsInProgress())
 
+    -- Vendor total: everything that WILL be sold.
     local total = 0
+    local willSell = {}
     for _, item in ipairs(sellable) do
         total = total + item.sellPrice * item.count
+        willSell[item] = true
     end
-    sumText:SetText(L["VENDOR_SUM"]:format(GetMoneyString(total, true)))
+
+    -- Possible auction value: items shown but NOT being sold (ignored or over
+    -- threshold) — what you could get at the auction house by keeping them.
+    local auctionTotal = 0
+    for _, item in ipairs(self.currentItems or {}) do
+        if not willSell[item] and item.auctionPrice then
+            auctionTotal = auctionTotal + item.auctionPrice
+        end
+    end
+
+    local text = L["VENDOR_SUM"]:format(GetMoneyString(total, true))
+    if addon.PriceSources:IsConfigured() then
+        text = text .. "      " .. L["AUCTION_SUM"]:format(GetMoneyString(auctionTotal, true))
+    end
+    sumText:SetText(text)
 end
 
 function MainFrame:Refresh()
