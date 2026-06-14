@@ -49,6 +49,7 @@ local defaults = {
             safeguard = true,
             useThreshold = false,
             thresholdGold = 100,
+            thresholdIgnoreUnlearned = false,
             verbose = false,
             maxItemLevel = addon.MAX_ITEM_LEVEL,
         },
