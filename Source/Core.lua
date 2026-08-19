@@ -2,8 +2,8 @@ local _, addon = ...
 
 addon.SAFEGUARD_LIMIT = 12   -- max items per safeguarded sale; fits the 12 buyback slots
 -- Slider max, inclusive cap: current max item level per client
--- (retail post-12.0 squish: 298, MoP Classic: 582).
-addon.MAX_ITEM_LEVEL = addon.Compat.IsRetail and 298 or 582
+-- (retail post-12.0 squish: 344, MoP Classic: 582).
+addon.MAX_ITEM_LEVEL = addon.Compat.IsRetail and 344 or 582
 
 local Addon = LibStub("AceAddon-3.0"):NewAddon("KhamulsTransmogCleanup", "AceEvent-3.0", "AceConsole-3.0")
 addon.Addon = Addon
