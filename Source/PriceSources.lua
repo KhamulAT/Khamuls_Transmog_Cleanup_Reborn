@@ -19,10 +19,10 @@ local TSM_SOURCES = {
 
 function PriceSources:GetAvailable()
     local list = { { value = "none", label = L["None"] } }
-    if addon.Compat.IsAddOnLoaded("Auctionator") and Auctionator and Auctionator.API and Auctionator.API.v1 then
+    if addon.Compat.IsOptionalAddOnLoaded("Auctionator") and Auctionator and Auctionator.API and Auctionator.API.v1 then
         list[#list + 1] = { value = "Auctionator", label = "Auctionator" }
     end
-    if addon.Compat.IsAddOnLoaded("TradeSkillMaster") and TSM_API then
+    if addon.Compat.IsOptionalAddOnLoaded("TradeSkillMaster") and TSM_API then
         for _, source in ipairs(TSM_SOURCES) do
             list[#list + 1] = { value = "TSM:" .. source, label = "TSM: " .. source }
         end

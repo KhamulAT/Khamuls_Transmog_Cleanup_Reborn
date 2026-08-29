@@ -58,12 +58,7 @@ function Options.Register()
 
     AddHeader(L["Compatible Addons"])
     for _, name in ipairs(COMPANION_ADDONS) do
-        local version
-        if addon.Compat.IsAddOnLoaded(name) then
-            version = addon.Compat.GetAddOnMetadata(name, "Version") or "?"
-        else
-            version = L["Not installed"]
-        end
+        local version = addon.Compat.GetOptionalAddOnVersion(name) or L["Not installed"]
         AddText(name .. ": " .. version)
     end
 
